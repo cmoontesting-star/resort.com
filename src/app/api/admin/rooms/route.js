@@ -5,6 +5,9 @@ import Resort from "@/utils/models/Resort";
 import mongoose from "mongoose";
 import { auth as adminAuth } from "@/app/adminAuth";
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // ======================
 // GET ALL ROOMS
 // ======================
@@ -33,7 +36,7 @@ export async function GET() {
                 path: "ownerId",
                 select: "fullName mobile"
             }
-        });
+        }).sort({ _id: -1 });
 
         return NextResponse.json(
             {
@@ -43,10 +46,11 @@ export async function GET() {
             { status: 200 }
         );
     } catch (error) {
+        console.error("Error in GET /api/admin/rooms:", error);
         return NextResponse.json(
             {
                 success: false,
-                message: error.message,
+                message: error.message || "Failed to fetch rooms",
             },
             { status: 500 }
         );
